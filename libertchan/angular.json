@@ -124,6 +124,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "libertchan"
+    }
+  },
+  "defaultProject": "libertchan",
+  "cli": {
+    "analytics": false
+  }
 }

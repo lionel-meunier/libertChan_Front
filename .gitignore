@@ -75,3 +75,5 @@ application-dev.properties
 
 ## MAC
 .DS_Store
+
+.idea/

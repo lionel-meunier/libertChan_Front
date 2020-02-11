@@ -10,7 +10,6 @@ import { AuthApiService } from './services/auth-api.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthModule, HttpInterceptorAuthService } from '@my/auth';
 
-console.log(AuthModule);
 @NgModule({
   declarations: [AppComponent],
   imports: [

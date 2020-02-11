@@ -13,7 +13,10 @@ export class CatalogMosaicComponent implements OnInit {
 
   ngOnInit() {
     console.log('test');
-    this.httpClient.get('http://localhost:8080/api').subscribe();
+    const options = {
+      observe : 'response'
+    };
+    this.httpClient.get('http://localhost:8080/api',  { observe: 'response' }).subscribe((c) => console.log(c));
   }
 
 }

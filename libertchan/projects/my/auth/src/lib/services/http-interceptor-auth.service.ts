@@ -1,20 +1,23 @@
 import { Injectable } from '@angular/core';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+  HttpResponse
+} from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class HttpInterceptorAuthService implements HttpInterceptor {
 
   constructor(private authService: AuthService) {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
-
     return this.authService.isAuthentificated$.pipe(
       switchMap((isAuth) => {
         if (isAuth === true) {
@@ -25,9 +28,22 @@ export class HttpInterceptorAuthService implements HttpInterceptor {
       switchMap((user) => {
         let request = req;
         if (user) {
-          request = req.clone({headers: req.headers.append('auth', user.token)});
+
+          request = req.clone({headers: req.headers.append('Auth', user.token)});
         }
-        return next.handle(request);
+        return next.handle(request).pipe(
+          catchError((reason: HttpErrorResponse) => {
+            console.log(reason);
+            if (reason.url === 'http://localhost:8080/api') {
+              return of(new HttpResponse({
+                body : {toto: true},
+                url : reason.url,
+                status : 200
+              }));
+            }
+            return throwError(reason);
+          })
+        );
       }),
     );
   }
